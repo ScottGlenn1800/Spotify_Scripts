@@ -48,7 +48,8 @@ def GetTrackData(session,Track):
 	Artist = OUTPUT["tracks"]["items"][0]["album"]['artists'][0]['name']
 	Name = OUTPUT["tracks"]["items"][0]['name']
 	Duration = OUTPUT["tracks"]["items"][0]['duration_ms']
-	return track(Name,Artist,Album,ReleaseDate,Duration)
+	Track = track(Name,Artist,Album,ReleaseDate,Duration)
+	return Track
 
 
 def main(): #This is for debugging the Library
