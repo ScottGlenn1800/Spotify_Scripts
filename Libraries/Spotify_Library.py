@@ -38,6 +38,14 @@ def GetArtistData(session,Artist):
 	Artist = artist(Name,Genres,Followers)
 	return Artist
 	
+def GetAlbumData(session,Album):
+	OUTPUT = session.search(q="album:" + "%s"%(Album),type="album")
+	Name = OUTPUT["albums"]["items"][0]["name"]
+	Artist = OUTPUT["albums"]["items"][0]["artists"][0]["name"]
+	ReleaseDate = OUTPUT["albums"]["items"][0]["release_date"]
+	Album = album(Name,Artist,ReleaseDate)
+	return Album
+	
 def GetTrackData(session,Track):
 	OUTPUT = session.search(q="track:" + "%s"%(Track),type="track")
 	if OUTPUT["tracks"]["items"]==[]:	#if the Tracks name is not on spotify, this array will return back as empty.
