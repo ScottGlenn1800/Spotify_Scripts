@@ -38,27 +38,39 @@ def GetArtistData(session,Artist):
 	Artist = artist(Name,Genres,Followers)
 	return Artist
 	
-def GetAlbumData(session,Album):
+def GetAlbumData(session,Album,Artist):
 	OUTPUT = session.search(q="album:" + "%s"%(Album),type="album")
-	Name = OUTPUT["albums"]["items"][0]["name"]
-	Artist = OUTPUT["albums"]["items"][0]["artists"][0]["name"]
-	ReleaseDate = OUTPUT["albums"]["items"][0]["release_date"]
-	Album = album(Name,Artist,ReleaseDate)
-	return Album
-	
-def GetTrackData(session,Track):
+	if OUTPUT["albums"]["items"]==[]:	#if the Tracks name is not on spotify, this array will return back as empty.
+		print"ERROR! Album not found on Spotify!"
+		sys.exit()
+	for a in OUTPUT['albums']['items']:
+		if a['name'] == Album:
+			if a['artists'][0]['name'] == Artist.Name:
+				print"Album %s found for Artist %s"%(Album,Artist.Name)
+				Name = OUTPUT["albums"]["items"][0]["name"]
+				Artist = OUTPUT["albums"]["items"][0]["artists"][0]["name"]
+				ReleaseDate = OUTPUT["albums"]["items"][0]["release_date"]
+				Album = album(Name,Artist,ReleaseDate)
+				return Album
+	print"Error! Album Results not found"
+
+def GetTrackData(session,Track,Artist):
 	OUTPUT = session.search(q="track:" + "%s"%(Track),type="track")
 	if OUTPUT["tracks"]["items"]==[]:	#if the Tracks name is not on spotify, this array will return back as empty.
 		print"ERROR! Track name not found on Spotify!"
 		sys.exit()
-	Album = OUTPUT["tracks"]["items"][0]["album"]['name']
-	ReleaseDate = OUTPUT["tracks"]["items"][0]["album"]['release_date']
-	Artist = OUTPUT["tracks"]["items"][0]["album"]['artists'][0]['name']
-	Name = OUTPUT["tracks"]["items"][0]['name']
-	Duration = OUTPUT["tracks"]["items"][0]['duration_ms']
-	Track = track(Name,Artist,Album,ReleaseDate,Duration)
-	return Track
-
+	for t in OUTPUT['tracks']['items']:
+		if t['name'] == Track:
+			if t['artists'][0]['name'] == Artist.Name:
+				print"Track %s found for Artist %s"%(Track,Artist.Name)
+				Album = OUTPUT["tracks"]["items"][0]["album"]['name']
+				ReleaseDate = OUTPUT["tracks"]["items"][0]["album"]['release_date']
+				Artist = OUTPUT["tracks"]["items"][0]["album"]['artists'][0]['name']
+				Name = OUTPUT["tracks"]["items"][0]['name']
+				Duration = OUTPUT["tracks"]["items"][0]['duration_ms']
+				Track = track(Name,Artist,Album,ReleaseDate,Duration)
+				return Track
+	print"ERROR! Track Results not found"
 
 def main(): #This is for debugging the Library
 	Arguments = ParseArgs()
