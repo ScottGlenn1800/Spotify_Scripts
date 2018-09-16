@@ -1,7 +1,7 @@
 import spotipy,os,sys
 import spotipy.util as util
 from optparse import OptionParser
-sys.path.append("C:/CODE/Spotify-Scripts")
+sys.path.append("C:/CODE/Spotify_Scripts/Libraries")
 from Spotify_Classes import *
 
 def ParseArgs():
@@ -38,6 +38,18 @@ def GetArtistData(session,Artist):
 	Artist = artist(Name,Genres,Followers)
 	return Artist
 	
+def GetTrackData(session,Track):
+	OUTPUT = session.search(q="track:" + "%s"%(Track),type="track")
+	if OUTPUT["tracks"]["items"]==[]:	#if the Tracks name is not on spotify, this array will return back as empty.
+		print"ERROR! Track name not found on Spotify!"
+		sys.exit()
+	Album = OUTPUT["tracks"]["items"][0]["album"]['name']
+	ReleaseDate = OUTPUT["tracks"]["items"][0]["album"]['release_date']
+	Artist = OUTPUT["tracks"]["items"][0]["album"]['artists'][0]['name']
+	Name = OUTPUT["tracks"]["items"][0]['name']
+	Duration = OUTPUT["tracks"]["items"][0]['duration_ms']
+	return track(Name,Artist,Album,ReleaseDate,Duration)
+
 
 def main(): #This is for debugging the Library
 	Arguments = ParseArgs()
@@ -53,4 +65,4 @@ def main(): #This is for debugging the Library
 
 
 
-main()
+#main()
