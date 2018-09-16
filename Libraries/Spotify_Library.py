@@ -5,6 +5,15 @@ sys.path.append("C:/CODE/Spotify_Scripts/Libraries")
 from Spotify_Classes import *
 
 def ParseArgs():
+	"""Parses the Arguments the user sends on the command line.
+	
+	No parameters needed
+
+	Options:
+		-A Artist
+
+	Returns the arguments
+	"""
 	parser = OptionParser()
 	parser.add_option("-A","--Artist",dest="artist",
 					 help="The name of the artist",metavar="ARTIST")
@@ -15,6 +24,13 @@ def ParseArgs():
 	return Arguments
 
 def CreateSpotifySession():
+	""" Attempts to get a token using the username and the application credentials. 
+	These Credentials are defaulted for now.
+
+	No parameters needed.
+
+	Returns a spotipy spotify session
+	"""
 	username = "12186403842"
 	#These are the Spotify App credentials for Music_Recommender App registered on Spotify
 	SPOTIFY_CLIENT_ID = "68ee9cc4856c4bbd877fa851b8ea4905"
@@ -28,6 +44,15 @@ def CreateSpotifySession():
 	return spotipy.Spotify(auth=token)
 
 def GetArtistData(session,Artist):
+	"""Retrieves information about Artist name that is passed to 
+	the function.
+
+	Parameters:
+		- session - Spotipy spotify object created in CreateSpotifySession.
+		- Artist - The name of the Artist the function should query.
+
+	Returns an artist object
+	"""
 	OUTPUT = session.search(q="artist:" + "%s"%(Artist),type="artist")
 	if OUTPUT["artists"]["items"]==[]:	#if the Artist name is not on spotify, this array will return back as empty.
 		print"ERROR! Artist not found on Spotify!"
@@ -39,6 +64,17 @@ def GetArtistData(session,Artist):
 	return Artist
 	
 def GetAlbumData(session,Album,Artist):
+	"""Retrieves information about Album name that is passed to 
+	the function.
+
+	Parameters:
+		- session - Spotipy spotify object created in CreateSpotifySession.
+		- Album - The name of the Album the function should query
+		- Artist - The artist object on the artist that created the album,
+				   passed from GetArtistData
+
+	Returns album object
+	"""
 	OUTPUT = session.search(q="album:" + "%s"%(Album),type="album")
 	if OUTPUT["albums"]["items"]==[]:	#if the Tracks name is not on spotify, this array will return back as empty.
 		print"ERROR! Album not found on Spotify!"
@@ -55,6 +91,17 @@ def GetAlbumData(session,Album,Artist):
 	print"Error! Album Results not found"
 
 def GetTrackData(session,Track,Artist):
+	"""Retrieves information about a Track name that is passed
+	to the function.
+
+	Parameters:
+		- session - Spotipy spotify object created in CreateSpotifySession.
+		- Track - The name of the Track the function should query
+		- Artist - The artist object of the artist that created the Track,
+				   passed from GetArtistData
+
+	Returns track object
+	"""
 	OUTPUT = session.search(q="track:" + "%s"%(Track),type="track")
 	if OUTPUT["tracks"]["items"]==[]:	#if the Tracks name is not on spotify, this array will return back as empty.
 		print"ERROR! Track name not found on Spotify!"
