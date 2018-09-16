@@ -57,11 +57,16 @@ def GetArtistData(session,Artist):
 	if OUTPUT["artists"]["items"]==[]:	#if the Artist name is not on spotify, this array will return back as empty.
 		print"ERROR! Artist not found on Spotify!"
 		sys.exit()
-	Name = OUTPUT["artists"]["items"][0]["name"]
-	Genres = OUTPUT["artists"]["items"][0]["genres"] #This is a list of the Genres that the band is associated with
-	Followers = OUTPUT["artists"]["items"][0]["followers"]["total"] #This is a list of the amount of followers the band has on Spotify
-	Artist = artist(Name,Genres,Followers)
-	return Artist
+	for a in OUTPUT['artists']['items']:
+		if a['name'] == Artist:
+			Name = a["name"]
+			Genres = a["genres"] #This is a list of the Genres that the band is associated with
+			Followers = a["followers"]["total"] #This is a list of the amount of followers the band has on Spotify
+			ID = a['id']
+			URI = a['uri']
+			URL = a['external_urls']['spotify']
+			Artist = artist(Name,Genres,Followers,ID,URI,URL)
+			return Artist
 	
 def GetAlbumData(session,Album,Artist):
 	"""Retrieves information about Album name that is passed to 
@@ -83,10 +88,13 @@ def GetAlbumData(session,Album,Artist):
 		if a['name'] == Album:
 			if a['artists'][0]['name'] == Artist.Name:
 				print"Album %s found for Artist %s"%(Album,Artist.Name)
-				Name = OUTPUT["albums"]["items"][0]["name"]
-				Artist = OUTPUT["albums"]["items"][0]["artists"][0]["name"]
-				ReleaseDate = OUTPUT["albums"]["items"][0]["release_date"]
-				Album = album(Name,Artist,ReleaseDate)
+				Name = a["name"]
+				Artist = a["artists"][0]["name"]
+				ReleaseDate = a["release_date"]
+				ID = a['id']
+				URI = a['uri']
+				URL = a['external_urls']['spotify']
+				Album = album(Name,Artist,ReleaseDate,ID,URI,URL)
 				return Album
 	print"Error! Album Results not found"
 
@@ -110,12 +118,15 @@ def GetTrackData(session,Track,Artist):
 		if t['name'] == Track:
 			if t['artists'][0]['name'] == Artist.Name:
 				print"Track %s found for Artist %s"%(Track,Artist.Name)
-				Album = OUTPUT["tracks"]["items"][0]["album"]['name']
-				ReleaseDate = OUTPUT["tracks"]["items"][0]["album"]['release_date']
-				Artist = OUTPUT["tracks"]["items"][0]["album"]['artists'][0]['name']
-				Name = OUTPUT["tracks"]["items"][0]['name']
-				Duration = OUTPUT["tracks"]["items"][0]['duration_ms']
-				Track = track(Name,Artist,Album,ReleaseDate,Duration)
+				Album = t["album"]['name']
+				ReleaseDate = t["album"]['release_date']
+				Artist = t["album"]['artists'][0]['name']
+				Name = t['name']
+				Duration = t['duration_ms']
+				ID = t['id']
+				URI = t['uri']
+				URL = t['external_urls']['spotify']
+				Track = track(Name,Artist,Album,ReleaseDate,Duration,ID,URI,URL)
 				return Track
 	print"ERROR! Track Results not found"
 
