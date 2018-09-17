@@ -55,8 +55,8 @@ def GetArtistData(session,Artist):
 	"""
 	OUTPUT = session.search(q="artist:" + "%s"%(Artist),type="artist")
 	if OUTPUT["artists"]["items"]==[]:	#if the Artist name is not on spotify, this array will return back as empty.
-		print"ERROR! Artist not found on Spotify!"
-		sys.exit()
+		print"ERROR! Artist %s not found on Spotify!"%(Artist)
+		#sys.exit()
 	for a in OUTPUT['artists']['items']:
 		if a['name'] == Artist:
 			Name = a["name"]
@@ -129,6 +129,40 @@ def GetTrackData(session,Track,Artist):
 				Track = track(Name,Artist,Album,ReleaseDate,Duration,ID,URI,URL)
 				return Track
 	print"ERROR! Track Results not found"
+
+def GetTopTracks(session,Artist):
+	"""Gets the top 10 tracks of the artist passed.passed back an array of Track objects.
+
+	Parameters
+		- session - Spotipy spotify object created in CreateSpotifySession.
+		- Artist - The artist object of the artist that created the Track,
+				   passed from GetArtistData
+
+	Returns list of Track objects.
+	"""
+	OUTPUT = session.artist_top_tracks(Artist.ID)
+	TopTracks = []
+	for t in OUTPUT['tracks']:
+		Track = GetTrackData(session,t['name'],Artist)
+		TopTracks.append(Track)
+	return TopTracks
+
+def GetRelatedArtists(session,Artist):
+	"""Gets the 10 most related artists to teh artist that is passed to the function.
+	Parameters
+		- session - Spotipy spotify object created in CreateSpotifySession.
+		- Artist - The artist object of the artist that created the Track,
+				   passed from GetArtistData
+
+	Returns list of Artist objects.
+	"""
+	OUTPUT = session.artist_related_artists(Artist.ID)
+	RelatedArtists = []
+	for a in OUTPUT['artists']:
+		Artist = GetArtistData(session,a['name'])
+		RelatedArtists.append(Artist)
+	return RelatedArtists
+
 
 def main(): #This is for debugging the Library
 	Arguments = ParseArgs()
