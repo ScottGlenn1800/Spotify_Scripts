@@ -83,7 +83,7 @@ def GetAlbumData(session,Album,Artist):
 	OUTPUT = session.search(q="album:" + "%s"%(Album),type="album")
 	if OUTPUT["albums"]["items"]==[]:	#if the Tracks name is not on spotify, this array will return back as empty.
 		print"ERROR! Album not found on Spotify!"
-		sys.exit()
+		#sys.exit()
 	for a in OUTPUT['albums']['items']:
 		if a['name'] == Album:
 			if a['artists'][0]['name'] == Artist.Name:
@@ -96,7 +96,7 @@ def GetAlbumData(session,Album,Artist):
 				URL = a['external_urls']['spotify']
 				Album = album(Name,Artist,ReleaseDate,ID,URI,URL)
 				return Album
-	print"Error! Album Results not found"
+	print"Error! Album %s not found"%(Album)
 
 def GetTrackData(session,Track,Artist):
 	"""Retrieves information about a Track name that is passed
@@ -113,7 +113,7 @@ def GetTrackData(session,Track,Artist):
 	OUTPUT = session.search(q="track:" + "%s"%(Track),type="track")
 	if OUTPUT["tracks"]["items"]==[]:	#if the Tracks name is not on spotify, this array will return back as empty.
 		print"ERROR! Track name not found on Spotify!"
-		sys.exit()
+		#sys.exit()
 	for t in OUTPUT['tracks']['items']:
 		if t['name'] == Track:
 			if t['artists'][0]['name'] == Artist.Name:
@@ -128,7 +128,7 @@ def GetTrackData(session,Track,Artist):
 				URL = t['external_urls']['spotify']
 				Track = track(Name,Artist,Album,ReleaseDate,Duration,ID,URI,URL)
 				return Track
-	print"ERROR! Track Results not found"
+	print"ERROR! Track %s not found"%(Track)
 
 def GetTopTracks(session,Artist):
 	"""Gets the top 10 tracks of the artist passed.passed back an array of Track objects.
@@ -162,6 +162,46 @@ def GetRelatedArtists(session,Artist):
 		Artist = GetArtistData(session,a['name'])
 		RelatedArtists.append(Artist)
 	return RelatedArtists
+
+def GetArtistAlbums(session,Artist):
+	"""
+	"""
+	OUTPUT = session.artist_albums(Artist.ID)
+	Albums = []
+	for a in OUTPUT['items']:
+		Skip = False
+		Album = GetAlbumData(session,a['name'],Artist)
+		if Album==None:
+			continue
+		for a in Albums:
+			if a.ID == Album.ID:
+				print"Skipping Duplicate Album: %s"%(Album.Name)
+				Skip = True
+		if Album==None or Skip==True:
+			continue
+		Albums.append(Album)
+	return Albums
+
+def GetAlbumTracks(session,Album,Artist):
+	"""
+	"""
+	OUTPUT = session.album_tracks(Album.ID)
+	Tracks = []
+	for t in OUTPUT['items']:
+		Track = GetTrackData(session,t['name'],Artist)
+		if Track == None:
+			continue
+		Tracks.append(Track)
+	return Tracks
+
+def GetArtistTracks(session,Artist):
+	All_Tracks = []
+	Albums = GetArtistAlbums(session,Artist)
+	for album in Albums:
+		Tracks = GetAlbumTracks(session,album,Artist)
+		for t in Tracks:
+			All_Tracks.append(t)
+	return All_Tracks
 
 
 def main(): #This is for debugging the Library
