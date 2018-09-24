@@ -9,7 +9,10 @@ class artist(object):
 		self.URL = URL
 
 class track(object):
-	def __init__(self,Name,Artist,Album,ReleaseDate,Duration,ID,URI,URL):
+	def __init__(self,Name,Artist,Album,ReleaseDate,Duration,
+				 ID,URI,URL,Energy,Liveness,Tempo,Speechiness,
+				 Acousticness,Instrumentalness,TimeSignature,
+				 Danceability,Key,Loudness,Valence,Mode):
 		self.Name = Name
 		self.Artist = Artist
 		self.Album = Album
@@ -18,6 +21,18 @@ class track(object):
 		self.ID = ID
 		self.URI = URI
 		self.URL = URL
+		self.Energy = Energy
+		self.Liveness = Liveness
+		self.Tempo = Tempo
+		self.Speechiness = Speechiness
+		self.Acousticness = Acousticness
+		self.Instrumentalness = Instrumentalness
+		self.TimeSignature = TimeSignature
+		self.Danceability = Danceability
+		self.Key = Key
+		self.Loudness = Loudness
+		self.Valence = Valence
+		self.Mode = Mode
 
 class album(object):
 	def __init__(self,Name,Artist,ReleaseDate,ID,URI,URL):
