@@ -53,9 +53,10 @@ def GetArtistData(session,Artist):
 
 	Returns an artist object
 	"""
+	ArtistData=None
 	OUTPUT = session.search(q="artist:" + "%s"%(Artist),type="artist")
 	if OUTPUT["artists"]["items"]==[]:	#if the Artist name is not on spotify, this array will return back as empty.
-		print"ERROR! Artist %s not found on Spotify!"%(Artist)
+		print"ERROR! No results for %s found on Spotify!"%(Artist)
 		#sys.exit()
 	for a in OUTPUT['artists']['items']:
 		if a['name'] == Artist:
@@ -65,8 +66,16 @@ def GetArtistData(session,Artist):
 			ID = a['id']
 			URI = a['uri']
 			URL = a['external_urls']['spotify']
-			Artist = artist(Name,Genres,Followers,ID,URI,URL)
-			return Artist
+			ArtistData = artist(Name,Genres,Followers,ID,URI,URL)
+	if ArtistData == None:
+		print "Error! Results found with %s in the name but no exact matches"%(Artist)
+		print'\n'
+		for a in OUTPUT['artists']['items']:
+			print a['name'].encode('utf8')
+			print a['genres']
+		#sys.exit()
+	else:
+		return ArtistData
 	
 def GetAlbumData(session,Album,Artist):
 	"""Retrieves information about Album name that is passed to 
@@ -110,7 +119,7 @@ def GetTrackData(session,Track,Artist):
 
 	Returns track object
 	"""
-	OUTPUT = session.search(q="track:" + "%s"%(Track),type="track")
+	OUTPUT = session.search(q="track:" + "%s"%(Track),type="track",limit=50)
 	if OUTPUT["tracks"]["items"]==[]:	#if the Tracks name is not on spotify, this array will return back as empty.
 		print"ERROR! Track name not found on Spotify!"
 		#sys.exit()
@@ -128,7 +137,7 @@ def GetTrackData(session,Track,Artist):
 				URL = t['external_urls']['spotify']
 				Track = track(Name,Artist,Album,ReleaseDate,Duration,ID,URI,URL)
 				return Track
-	print"ERROR! Track %s not found"%(Track)
+	print"ERROR! Track %s by %s not found"%(Track,Artist.Name)
 
 def GetTopTracks(session,Artist):
 	"""Gets the top 10 tracks of the artist passed.passed back an array of Track objects.
